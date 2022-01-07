@@ -7,7 +7,7 @@ import tkinter.font as tkFont
 window = tk.Tk()
 window.title('CALCULATOR')
 
-window.columnconfigure([0, 1, 2, 3], weight=1, minsize=50)
+window.columnconfigure([0, 1, 2, 3], weight=1, minsize=120)
 window.rowconfigure([0, 1, 2, 3, 4, 5, 6], weight=1, minsize=50)
 
 fontExample = tkFont.Font(family="Arial", size=18, weight="normal", slant="roman")
