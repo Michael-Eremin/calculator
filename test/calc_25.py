@@ -188,6 +188,7 @@ def value_lbl_screen(row, col):
     elif names_buttons[row][col] == 'CE':
         activate_ce_button()
 
+
 for i in range(len(names_buttons)):
     for j in range(len(names_buttons[i])):
         btn_buttons = tk.Button(
