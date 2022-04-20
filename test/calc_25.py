@@ -69,113 +69,124 @@ def operation_result (oper_1, func_oper, oper_2=None):
 
     return "%.2f" % round(result_operation, 2)
 
-
-def value_lbl_screen(row, col):
-    if names_buttons[row][col] in numbers:
-        if len(count_result) == 0:
-            lbl_screen['text'] += (names_buttons[row][col])
-            if count_operations[0] == 0:
-                nb_oper_1.extend(names_buttons[row][col])
-
-            else:
-                nb_oper_2.extend(names_buttons[row][col])
+def activate_number_button(btn):
+    if len(count_result) == 0:
+        lbl_screen['text'] += (btn)
+        if count_operations[0] == 0:
+            nb_oper_1.extend(btn)
 
         else:
-            if nb_operation[0] == '=':
-                lbl_screen['text'] = ''
-                lbl_screen['text'] += (names_buttons[row][col])
-                nb_operation.clear()
-                nb_oper_1.clear()
-                nb_oper_1.extend(names_buttons[row][col])
-                count_result.clear()
+            nb_oper_2.extend(btn)
 
-            else:
-                lbl_screen['text'] += (names_buttons[row][col])
-                if count_operations[0] == 0:
-                    nb_oper_1.extend(names_buttons[row][col])
+    else:
+        if nb_operation[0] == '=':
+            lbl_screen['text'] = ''
+            lbl_screen['text'] += (btn)
+            nb_operation.clear()
+            nb_oper_1.clear()
+            nb_oper_1.extend(btn)
+            count_result.clear()
 
-                elif count_operations[0] == 1:
-                    nb_oper_2.extend(names_buttons[row][col])
+        else:
+            lbl_screen['text'] += (btn)
+            if count_operations[0] == 0:
+                nb_oper_1.extend(btn)
 
-                elif count_operations[0] > 1:
-                    nb_oper_2.extend(names_buttons[row][col])
+            elif count_operations[0] == 1:
+                nb_oper_2.extend(btn)
+
+            elif count_operations[0] > 1:
+                nb_oper_2.extend(btn)
 
 
-    elif names_buttons[row][col] == '=' and len(nb_oper_1) > 0:
-        count_result.extend('result')
-        if nb_operation[0] not in [' 2√x', ' 3√x', ' L circle_r', ' S circle_r', ' V ball_r', ' 1/x']:
+def activate_equally_button(btn):
+    if nb_operation[0] not in [' 2√x', ' 3√x', ' L circle_r', ' S circle_r', ' V ball_r', ' 1/x']:
+        oper_1 = float(''.join(nb_oper_1))
+        oper_2 = float(''.join(nb_oper_2))
+        func_oper = nb_operation[0]
+        nb_oper_1.clear()
+        nb_oper_2.clear()
+        lbl_screen['text'] = str(operation_result(oper_1, func_oper, oper_2))
+
+        if count_operations[0] <= 1:
+            nb_oper_1.extend(str(lbl_screen['text']))
+            nb_operation.clear()
+            nb_operation.append(btn)
+
+        else:
+            nb_oper_1.extend(lbl_screen['text'])
+
+        nb_operation.clear()
+        nb_operation.append(btn)
+        count_operations[0] = 0
+
+    else:
+        oper_1 = float(''.join(nb_oper_1))
+        func_oper = nb_operation[0]
+        nb_oper_1.clear()
+        nb_oper_2.clear()
+        lbl_screen['text'] = str(operation_result(oper_1, func_oper))
+        nb_oper_1.extend(str(lbl_screen['text']))
+        nb_operation.clear()
+        nb_operation.append(btn)
+
+
+def activate_operation(btn):
+    if count_operations[0] == 1:
+        nb_operation.clear()
+        nb_operation.append(btn)
+        lbl_screen['text'] += (btn)
+
+    elif count_operations[0] > 1:
+        if len(nb_oper_2) == 0:
+            nb_operation.clear()
+            nb_operation.append(btn)
+            lbl_screen['text'] += (btn)
+
+        else:
+            lbl_screen['text'] += (btn)
             oper_1 = float(''.join(nb_oper_1))
             oper_2 = float(''.join(nb_oper_2))
             func_oper = nb_operation[0]
             nb_oper_1.clear()
             nb_oper_2.clear()
-            lbl_screen['text'] = str(operation_result(oper_1, func_oper, oper_2))
-
-            if count_operations[0] <= 1:
-                nb_oper_1.extend(str(lbl_screen['text']))
+            nb_operation.clear()
+            nb_operation.append(btn)
+            if func_oper == '/' and oper_2 == 0:
+                lbl_screen['text'] = 'error'
+                count_result.clear()
+                count_operations[0] = 0
                 nb_operation.clear()
-                nb_operation.append(names_buttons[row][col])
-
+                nb_oper_1.clear()
+                nb_oper_2.clear()
             else:
-                nb_oper_1.extend(lbl_screen['text'])
+                nb_oper_1.extend(operation_result(oper_1, func_oper, oper_2))
+                oper_1 = float(''.join(nb_oper_1))
 
-            nb_operation.clear()
-            nb_operation.append(names_buttons[row][col])
-            count_operations[0] = 0
 
-        else:
-            oper_1 = float(''.join(nb_oper_1))
-            func_oper = nb_operation[0]
-            nb_oper_1.clear()
-            nb_oper_2.clear()
-            lbl_screen['text'] = str(operation_result(oper_1, func_oper))
-            nb_oper_1.extend(str(lbl_screen['text']))
-            nb_operation.clear()
-            nb_operation.append(names_buttons[row][col])
+def activate_ce_button():
+    count_result.clear()
+    count_operations[0] = 0
+    nb_operation.clear()
+    nb_oper_1.clear()
+    nb_oper_2.clear()
+    lbl_screen['text'] = ''
 
+
+def value_lbl_screen(row, col):
+    if names_buttons[row][col] in numbers:
+        activate_number_button(names_buttons[row][col])
+
+    elif names_buttons[row][col] == '=' and len(nb_oper_1) > 0:
+        count_result.extend('result')
+        activate_equally_button(names_buttons[row][col])
 
     elif len(nb_oper_1) > 0 and names_buttons[row][col] in operations:
         count_operations[0] += 1
-        if count_operations[0] == 1:
-            nb_operation.clear()
-            nb_operation.append(names_buttons[row][col])
-            lbl_screen['text'] += (names_buttons[row][col])
-
-        elif count_operations[0] > 1:
-            if len(nb_oper_2) == 0:
-                nb_operation.clear()
-                nb_operation.append(names_buttons[row][col])
-                lbl_screen['text'] += (names_buttons[row][col])
-
-            else:
-                lbl_screen['text'] += (names_buttons[row][col])
-                oper_1 = float(''.join(nb_oper_1))
-                oper_2 = float(''.join(nb_oper_2))
-                func_oper = nb_operation[0]
-                nb_oper_1.clear()
-                nb_oper_2.clear()
-                nb_operation.clear()
-                nb_operation.append(names_buttons[row][col])
-                if func_oper == '/' and oper_2 == 0:
-                    lbl_screen['text'] = 'error'
-                    count_result.clear()
-                    count_operations[0] = 0
-                    nb_operation.clear()
-                    nb_oper_1.clear()
-                    nb_oper_2.clear()
-                else:
-                    nb_oper_1.extend(operation_result(oper_1, func_oper, oper_2))
-                    oper_1 = float(''.join(nb_oper_1))
-
-
+        activate_operation(names_buttons[row][col])
 
     elif names_buttons[row][col] == 'CE':
-        count_result.clear()
-        count_operations[0] = 0
-        nb_operation.clear()
-        nb_oper_1.clear()
-        nb_oper_2.clear()
-        lbl_screen['text'] = ''
+        activate_ce_button()
 
 
 for i in range(len(names_buttons)):
