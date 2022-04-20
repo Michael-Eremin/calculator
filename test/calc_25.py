@@ -177,20 +177,16 @@ def value_lbl_screen(row, col):
     if names_buttons[row][col] in numbers:
         activate_number_button(names_buttons[row][col])
 
-
     elif names_buttons[row][col] == '=' and len(nb_oper_1) > 0:
         count_result.extend('result')
         activate_equally_button(names_buttons[row][col])
-
 
     elif len(nb_oper_1) > 0 and names_buttons[row][col] in operations:
         count_operations[0] += 1
         activate_operation(names_buttons[row][col])
 
-
     elif names_buttons[row][col] == 'CE':
         activate_ce_button()
-
 
 for i in range(len(names_buttons)):
     for j in range(len(names_buttons[i])):
