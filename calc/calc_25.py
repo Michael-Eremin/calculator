@@ -1,4 +1,4 @@
-'''Graphing calculator program. The calculations are performed sequentially, one after the other.'''
+"""Graphing calculator program. The calculations are performed sequentially, one after the other."""
 import tkinter as tk
 from math import *
 import tkinter.font as tkFont
@@ -28,36 +28,71 @@ names_buttons = [[],
 
 numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.']
 operations = ['+', '^', ' 2√x', ' 3√x', '-', '/', '*', ' L circle_r', ' S circle_r', ' V ball_r', ' 1/x']
+operations_for_two_operands = ['+', '^', '-', '/', '*']
+operations_for_first_operand = [' 2√x', ' 3√x', ' L circle_r', ' S circle_r', ' V ball_r', ' 1/x']
 
 # Sequence of values of activated buttons for the First operand
 first_operand_digits = []
 
-# Values of activated buttons for the operation
-operation_value = []
-
 # Sequence of values of activated buttons for the Next operand
 next_operand_digits = []
+
+# Values of activated buttons for the operation
+operation_value = ['']
 
 # Counting the Operation queue in the expression displayed on the screen
 count_operations = [0]
 
 # Counting the queue of the intermediate Result in the expression displayed on the screen
-count_result = []
+# count_result = [0]
 
 
-def operation_result (operand_1, function_operator, operand_2=None):
-    '''Operations on numbers.'''
-    result_operation = 0
-    operand_1 = Decimal(operand_1)
-    if not operand_2 is None:
-        operand_2 = Decimal(operand_2)
+def check_process_status() -> list[str]:
+    """Specifies the current status code.
+    return:
+    '_' == no values, is the first operand make;
+    'result' == the result of the previous operation;
+    '_F_of' == there is a first operand and a function for one operand (for first)
+    '_F_ot' == there is a first operand and a function for two operands (for two)
+    '_F_ot_N' == there is a first operand and a function for two operands and next operand
+    """
+    status = list()
+    status.append('')
+    if count_operations[0] == 0:
+        status[0] = '_'
+    elif first_operand_digits and not next_operand_digits:
+        if count_operations[0] == 1 and operation_value[0] == '=':
+            status[0] = 'result'
+        # First choice of operation for one first operand
+        elif count_operations[0] == 1 and operation_value[0] in operations_for_first_operand:
+            status[0] = '_F_of'
+        # Selecting the next operation that will run the first one
+        elif count_operations[0] >= 2 and operation_value[0] in operations_for_first_operand:
+            status[0] = '_F_of'
+        # Selecting the next operation that will run the first one
+        elif count_operations[0] >= 2 and operation_value[0] in operations_for_two_operands:
+            status[0] = '_F_ot'
+        # First choice of operation for two operands
+        elif count_operations[0] == 1 and operation_value[0] in operations_for_two_operands:
+            status[0] = '_F_ot'
+        # Possible replacements for the first operation
+        elif count_operations[0] >= 2 and operation_value[0] in operations_for_first_operand:
+            status[0] = '_F_of'
+        # Possible replacements for the first operation
+        elif count_operations[0] >= 2 and operation_value[0] in operations_for_two_operands:
+            status[0] = '_F_ot'
+    elif next_operand_digits:
+        status[0] = '_F_ot_N'
+    return status
+
+
+def calculate_result(operand_1: str, function_operator: str, operand_2=None) -> str:
+    """Operations on numbers."""
+    operand_1 = float(operand_1)
+    if operand_2 != '':
+        operand_2 = float(operand_2)
     if function_operator == '/':
-        if operand_2 == 0:
-            result_operation = 'error'
-            return "%s" % result_operation
-        else:
-            result_operation = operand_1 / operand_2
-            return "%.2f" % round(result_operation, 2)
+        result_operation = operand_1 / operand_2
     if function_operator == '*':
         result_operation = operand_1 * operand_2
     elif function_operator == '+':
@@ -67,137 +102,122 @@ def operation_result (operand_1, function_operator, operand_2=None):
     elif function_operator == '^':
         result_operation = operand_1 ** operand_2
     elif function_operator == ' 2√x':
-        result_operation = operand_1 ** Decimal(1 / 2)
+        result_operation = operand_1 ** float(1 / 2)
     elif function_operator == ' 3√x':
-        result_operation = operand_1 ** Decimal(1 / 3)
+        result_operation = operand_1 ** float(1 / 3)
     elif function_operator == ' L circle_r':
-        result_operation = Decimal(2) * Decimal(pi) * operand_1
+        result_operation = float(2) * float(pi) * operand_1
     elif function_operator == ' S circle_r':
-        result_operation = Decimal(pi) * (operand_1 ** Decimal(2))
+        result_operation = float(pi) * (operand_1 ** float(2))
     elif function_operator == ' V ball_r':
-        result_operation = Decimal(4/3) * Decimal(pi) * (operand_1 ** Decimal(3))
+        result_operation = float(4/3) * float(pi) * (operand_1 ** float(3))
     elif function_operator == ' 1/x':
-        result_operation = Decimal(1) / operand_1
-    return "%.2f" % round(result_operation, 2)
+        result_operation = float(1) / operand_1
+    return round(result_operation, 4)
 
-
-def activate_number_button(act_btn):
-    '''Activation of the button with the value of the digit.'''
-    if len(count_result) == 0:
+def write_first_operand(act_btn):
+    if act_btn != '.' or act_btn == '.' and '.' not in first_operand_digits:
         lbl_screen['text'] += act_btn
-        if count_operations[0] == 0:
-            first_operand_digits.extend(act_btn)
-        else:
-            next_operand_digits.extend(act_btn)
+        first_operand_digits.extend(act_btn)
+
+def write_next_operand(act_btn):
+    if act_btn != '.' or act_btn == '.' and '.' not in next_operand_digits:
+        lbl_screen['text'] += act_btn
+        next_operand_digits.extend(act_btn)
+
+
+def write_operation(act_btn):
+    lbl_screen['text'] = lbl_screen['text'].replace(operation_value[0], '') + act_btn
+
+
+def reset_status():
+    count_operations[0] = 0
+    operation_value[0] = ''
+    first_operand_digits.clear()
+    next_operand_digits.clear()
+
+
+
+def call_calculation():
+    operand_1 = ''.join(first_operand_digits)
+    operand_2 = ''.join(next_operand_digits)
+    function_operator = operation_value[0]
+    intermediate_result = list()
+    intermediate_result.append('')
+    if function_operator == '/' and float(operand_2) == 0:
+        reset_status()
+        intermediate_result[0] = 'ERROR'
+    elif function_operator == ' 1/x' and float(operand_1) == 0:
+        reset_status()
+        intermediate_result[0] = 'ERROR'
     else:
-        if operation_value[0] == '=':
-            lbl_screen['text'] = ''
-            lbl_screen['text'] += act_btn
-            operation_value.clear()
-            first_operand_digits.clear()
-            first_operand_digits.extend(act_btn)
-            count_result.clear()
-        else:
-            lbl_screen['text'] += act_btn
-            if count_operations[0] == 0:
-                first_operand_digits.extend(act_btn)
-            elif count_operations[0] >= 1:
-                next_operand_digits.extend(act_btn)
+        intermediate_result[0] = calculate_result(operand_1, function_operator, operand_2)
+        reset_status()
+        first_operand_digits.extend(str(intermediate_result[0]))
+    return intermediate_result[0]
 
 
 def activate_equally_button(act_btn):
-    '''Activation of the button with the value of '='.'''
-    if operation_value[0] not in [' 2√x', ' 3√x', ' L circle_r', ' S circle_r', ' V ball_r', ' 1/x']:
-        operand_1 = Decimal(''.join(first_operand_digits))
-        operand_2 = Decimal(''.join(next_operand_digits))
-        func_oper = operation_value[0]
-        first_operand_digits.clear()
-        next_operand_digits.clear()
-        lbl_screen['text'] = str(operation_result(operand_1, func_oper, operand_2))
+    """Activation of the button with the value of '='."""
+    status = check_process_status()
+    result = list()
+    result.append(0)
 
-        if count_operations[0] <= 1:
-            first_operand_digits.extend(str(lbl_screen['text']))
-            operation_value.clear()
-            operation_value.append(act_btn)
-        else:
-            first_operand_digits.extend(lbl_screen['text'])
+    if status[0] == '_F_of' or status[0] == '_F_ot_N':
+        result[0] = call_calculation()
+        lbl_screen['text'] = str(result[0])
+    count_operations[0] = + 1
+    operation_value[0] = act_btn
 
-        operation_value.clear()
-        operation_value.append(act_btn)
-        count_operations[0] = 0
 
-    else:
-        operand_1 = Decimal(''.join(first_operand_digits))
-        func_oper = operation_value[0]
-        first_operand_digits.clear()
-        next_operand_digits.clear()
-        lbl_screen['text'] = str(operation_result(operand_1, func_oper))
-        first_operand_digits.extend(str(lbl_screen['text']))
-        operation_value.clear()
-        operation_value.append(act_btn)
+def activate_number_button(act_btn):
+    """Activation of the button with the value of the digit."""
+    status = check_process_status()
+    if status[0] != 'result':
+        if status[0] == '_' and not operation_value[0]:
+            write_first_operand(act_btn)
+        elif status[0] == '_' and operation_value[0]:
+            reset_status()
+            write_first_operand(act_btn)
+        elif status[0] == '_F_ot' or status[0] == '_F_ot_N':
+            write_next_operand(act_btn)
 
 
 def activate_operation_button(act_btn):
-    '''Button activation with function_operator value.'''
-    if count_operations[0] == 0:
-        operation_value.clear()
-        operation_value.append(act_btn)
-        lbl_screen['text'] = act_btn
+    """Button activation with function_operator value."""
 
-
-
-    if count_operations[0] == 1:
-        operation_value.clear()
-        operation_value.append(act_btn)
-        lbl_screen['text'] = act_btn
-    elif count_operations[0] > 1:
-        if len(next_operand_digits) == 0:
-            operation_value.clear()
-            operation_value.append(act_btn)
-            lbl_screen['text'] += act_btn
-        else:
-            operand_1 = Decimal(''.join(first_operand_digits))
-            operand_2 = Decimal(''.join(next_operand_digits))
-            func_oper = operation_value[0]
-            first_operand_digits.clear()
-            next_operand_digits.clear()
-            operation_value.clear()
-            operation_value.append(act_btn)
-            if func_oper == '/' and operand_2 == 0:
-                lbl_screen['text'] = 'error'
-                count_result.clear()
-                count_operations[0] = 0
-                operation_value.clear()
-                first_operand_digits.clear()
-                next_operand_digits.clear()
-            else:
-                intermediate_result = operation_result(operand_1, func_oper, operand_2)
-                first_operand_digits.extend(intermediate_result)
-                lbl_screen['text'] = intermediate_result + act_btn
-
+    status = check_process_status()
+    print('1status:', status)
+    result = list()
+    result.append(0)
+    if status[0] == '_':
+        write_operation(act_btn)
+    elif status[0] == '_F_ot' or status[0] == 'result':
+        write_operation(act_btn)
+    elif status[0] == '_F_of' or status[0] == '_F_ot_N':
+        result[0] = call_calculation()
+        lbl_screen['text'] = str(result[0]) + act_btn
+    count_operations[0] = + 1
+    operation_value[0] = act_btn
+    print('status num:', status[0])
+    print('res:', result)
 
 def activate_ce_button():
-    '''Activation of the button with the value of 'CE'.'''
-    count_result.clear()
-    count_operations[0] = 0
-    operation_value.clear()
-    first_operand_digits.clear()
-    next_operand_digits.clear()
+    """Activation of the button with the value of 'CE'."""
+    reset_status()
     lbl_screen['text'] = ''
 
 
 def value_lbl_screen(row, col):
-    '''Screen display.'''
+    """Screen display."""
     # For 'number'.
     if names_buttons[row][col] in numbers:
         activate_number_button(names_buttons[row][col])
     # For '='.
     elif names_buttons[row][col] == '=' and len(first_operand_digits) > 0:
-        count_result.extend('result')
         activate_equally_button(names_buttons[row][col])
     # For 'function_operator'.
     elif names_buttons[row][col] in operations:
-        count_operations[0] += 1
         activate_operation_button(names_buttons[row][col])
     # For 'CE'.
     elif names_buttons[row][col] == 'CE':
@@ -218,4 +238,5 @@ for i in range(len(names_buttons)):
         )
         btn_buttons.grid(row=i, column=j, sticky="nsew")
 if __name__ == '__main__':
+
     window.mainloop()
