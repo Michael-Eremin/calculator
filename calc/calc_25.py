@@ -3,7 +3,7 @@ import tkinter as tk
 from math import *
 import tkinter.font as tkFont
 from decimal import *
-
+from calc.calc_parse import calculate_by_line
 
 # Class 'tkinter' instance.
 window = tk.Tk()
@@ -11,7 +11,7 @@ window.title('CALCULATOR')
 
 # Window Options.
 window.columnconfigure([0, 1, 2, 3], weight=1, minsize=130)
-window.rowconfigure([0, 1, 2, 3, 4, 5, 6], weight=1, minsize=60)
+window.rowconfigure([0, 1, 2, 3, 4, 5, 6,7], weight=1, minsize=60)
 fontExample = tkFont.Font(family="Arial", size=18, weight="normal", slant="roman")
 lbl_screen = tk.Label(master=window, font=fontExample, text='')
 lbl_screen.grid(row=0, columnspan=4, sticky='nsew')
@@ -23,7 +23,8 @@ names_buttons = [[],
                  ['1', '2', '3', '/'],
                  ['0', '.', ' 1/x', '+'],
                  ['^', ' 2√x', ' 3√x', '-'],
-                 [' L circle_r', ' S circle_r', ' V ball_r', '=']
+                 [' L circle_r', ' S circle_r', ' V ball_r', '='],
+                 ['STR', '(', ')', '<<<']
                  ]
 
 numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.']
@@ -43,8 +44,10 @@ operation_value = ['']
 # Counting the Operation queue in the expression displayed on the screen
 count_operations = [0]
 
-# Counting the queue of the intermediate Result in the expression displayed on the screen
-# count_result = [0]
+# working mode:
+#             throughout the line: mode[0] == 1;
+#             successively: mode[0] == 0.
+mode = [0]
 
 
 def check_process_status() -> list[str]:
@@ -208,20 +211,39 @@ def activate_ce_button():
     lbl_screen['text'] = ''
 
 
-def value_lbl_screen(row, col):
+def value_lbl_screen_str(act_btn):
+    pass
+
+
+def value_lbl_screen(act_btn):
     """Screen display."""
+
     # For 'number'.
-    if names_buttons[row][col] in numbers:
-        activate_number_button(names_buttons[row][col])
+    if act_btn in numbers:
+        activate_number_button(act_btn)
     # For '='.
-    elif names_buttons[row][col] == '=' and len(first_operand_digits) > 0:
-        activate_equally_button(names_buttons[row][col])
+    elif act_btn == '=' and len(first_operand_digits) > 0:
+        activate_equally_button(act_btn)
     # For 'function_operator'.
-    elif names_buttons[row][col] in operations:
-        activate_operation_button(names_buttons[row][col])
+    elif act_btn in operations:
+        activate_operation_button(act_btn)
     # For 'CE'.
-    elif names_buttons[row][col] == 'CE':
+    elif act_btn == 'CE':
         activate_ce_button()
+
+def select_mode(row, col):
+    act_btn = names_buttons[row][col]
+    if act_btn == 'STR':
+        if mode[0] == 1:
+            mode[0] = 0
+        else:
+            mode[0] = 1
+    if mode[0] == 1:
+        value_lbl_screen_str(act_btn)
+    else:
+        value_lbl_screen(act_btn)
+
+
 
 # Format and location of buttons.
 for i in range(len(names_buttons)):
@@ -234,7 +256,7 @@ for i in range(len(names_buttons)):
             font=fontExample,
             bg="GREEN",
             #Button activation.
-            command=lambda row=i, col=j: value_lbl_screen(row, col)
+            command=lambda row=i, col=j: select_mode(row, col)
         )
         btn_buttons.grid(row=i, column=j, sticky="nsew")
 if __name__ == '__main__':
