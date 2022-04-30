@@ -31,6 +31,7 @@ numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.']
 operations = ['+', '^', ' 2√x', ' 3√x', '-', '/', '*', ' L circle_r', ' S circle_r', ' V ball_r', ' 1/x']
 operations_for_two_operands = ['+', '^', '-', '/', '*']
 operations_for_first_operand = [' 2√x', ' 3√x', ' L circle_r', ' S circle_r', ' V ball_r', ' 1/x']
+operations_to_manage = ['STR', '<<<', 'CE', '=']
 
 # Sequence of values of activated buttons for the First operand
 first_operand_digits = []
@@ -48,6 +49,9 @@ count_operations = [0]
 #             throughout the line: mode[0] == 1;
 #             successively: mode[0] == 0.
 mode = [0]
+
+# List to calculate in 'STR' mode.
+lbl_screen_list = []
 
 
 def check_process_status() -> list[str]:
@@ -212,7 +216,24 @@ def activate_ce_button():
 
 
 def value_lbl_screen_str(act_btn):
-    pass
+    if act_btn not in operations_to_manage:
+        lbl_screen['text'] += act_btn
+        lbl_screen_list.append(act_btn)
+        print('lbl_screen_list', lbl_screen_list)
+    elif act_btn == '=':
+        lbl_screen_str = ''.join(lbl_screen_list)
+        result = calculate_by_line(lbl_screen_str)
+        lbl_screen['text'] = result
+    elif act_btn == 'CE':
+        lbl_screen['text'] = ''
+        lbl_screen_list.clear()
+    elif act_btn == '<<<':
+        lbl_screen_list.pop()
+        print('lbl_screen_list', lbl_screen_list)
+        lbl_screen['text'] = ''.join(lbl_screen_list)
+
+
+
 
 
 def value_lbl_screen(act_btn):
