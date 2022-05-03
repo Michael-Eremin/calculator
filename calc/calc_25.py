@@ -32,6 +32,8 @@ operations = ['+', '^', ' 2√x', ' 3√x', '-', '/', '*', ' L circle_r', ' S ci
 operations_for_two_operands = ['+', '^', '-', '/', '*']
 operations_for_first_operand = [' 2√x', ' 3√x', ' L circle_r', ' S circle_r', ' V ball_r', ' 1/x']
 operations_to_manage = ['STR', '<<<', 'CE', '=']
+operations_requiring_interpretation = [' 2√x', ' 3√x', ' L circle_r', ' S circle_r', ' V ball_r', ' 1/x', '^']
+operations_for_mode_str = ['STR', '(', ')', '<<<']
 
 # Sequence of values of activated buttons for the First operand
 first_operand_digits = []
@@ -214,9 +216,42 @@ def activate_ce_button():
     reset_status()
     lbl_screen['text'] = ''
 
+def interpret_operation(act_btn):
+    if act_btn == '^':
+        lbl_screen['text'] += act_btn
+        act_btn = '**'
+        lbl_screen_list.append(act_btn)
+    elif act_btn == ' 1/x':
+        lbl_screen_list.insert(0, '1/(')
+        lbl_screen_list.append(')')
+        lbl_screen['text'] = '1/(' + lbl_screen['text'] + ')'
+    elif act_btn == ' 2√x':
+        lbl_screen_list.insert(0, '(')
+        lbl_screen_list.append(')**(1/2)')
+        lbl_screen['text'] = '(' + lbl_screen['text'] + ')2√x'
+    elif act_btn == ' 3√x':
+        lbl_screen_list.insert(0, '(')
+        lbl_screen_list.append(')**(1/3)')
+        lbl_screen['text'] = '(' + lbl_screen['text'] + ')3√x'
+    elif act_btn == ' L circle_r':
+        lbl_screen_list.insert(0, '(')
+        end_str = f')*2*{pi}'
+        lbl_screen_list.append(end_str)
+        lbl_screen['text'] = '(' + lbl_screen['text'] + ')Lc_r'
+    elif act_btn == ' S circle_r':
+        lbl_screen_list.insert(0, '(')
+        end_str = f')**2*{pi}'
+        lbl_screen_list.append(end_str)
+        lbl_screen['text'] = '(' + lbl_screen['text'] + ')Sc_r'
+    elif act_btn == ' V ball_r':
+        lbl_screen_list.insert(0, '(')
+        end_str = f')**3*{(4/3)*pi}'
+        lbl_screen_list.append(end_str)
+        lbl_screen['text'] = '(' + lbl_screen['text'] + ')Vb_r'
+
 
 def value_lbl_screen_str(act_btn):
-    if act_btn not in operations_to_manage:
+    if act_btn not in operations_to_manage and act_btn not in operations_requiring_interpretation:
         lbl_screen['text'] += act_btn
         lbl_screen_list.append(act_btn)
         print('lbl_screen_list', lbl_screen_list)
@@ -231,14 +266,12 @@ def value_lbl_screen_str(act_btn):
         lbl_screen_list.pop()
         print('lbl_screen_list', lbl_screen_list)
         lbl_screen['text'] = ''.join(lbl_screen_list)
-
-
-
+    elif act_btn in operations_requiring_interpretation:
+        interpret_operation(act_btn)
 
 
 def value_lbl_screen(act_btn):
     """Screen display."""
-
     # For 'number'.
     if act_btn in numbers:
         activate_number_button(act_btn)
@@ -252,34 +285,74 @@ def value_lbl_screen(act_btn):
     elif act_btn == 'CE':
         activate_ce_button()
 
+def make_widget_str():
+    for i in range(7, 8):
+        for j in range(0,1):
+            if mode[0] == 1:
+                color_mode = "#FFF38F"
+                btn_buttons(i, j, color_mode)
+            else:
+                color_mode = "#8FFFA2"
+                btn_buttons(i, j, color_mode)
+
+
+def make_widget_mode_str():
+    for i in range(7, 8):
+        for j in range(1, 4):
+            if mode[0] == 1:
+                color_mode = "#01C624"
+                btn_buttons(i, j, color_mode)
+            else:
+                color_mode = "#8FFFA2"
+                btn_buttons(i, j, color_mode)
+
+
 def select_mode(row, col):
     act_btn = names_buttons[row][col]
+    print('mode', mode[0])
     if act_btn == 'STR':
         if mode[0] == 1:
+            lbl_screen['text'] = ''
+            lbl_screen_list.clear()
             mode[0] = 0
         else:
+            activate_ce_button()
             mode[0] = 1
+        make_widget_str()
+        make_widget_mode_str()
     if mode[0] == 1:
         value_lbl_screen_str(act_btn)
     else:
         value_lbl_screen(act_btn)
 
 
+def btn_buttons(i, j, color_mode):
 
-# Format and location of buttons.
-for i in range(len(names_buttons)):
-    for j in range(len(names_buttons[i])):
-        btn_buttons = tk.Button(
-            master=window,
-            relief=tk.RIDGE,
-            borderwidth=3,
-            text=names_buttons[i][j],
-            font=fontExample,
-            bg="GREEN",
-            #Button activation.
-            command=lambda row=i, col=j: select_mode(row, col)
-        )
-        btn_buttons.grid(row=i, column=j, sticky="nsew")
+    btn_buttons = tk.Button(
+        master=window,
+        relief=tk.RIDGE,
+        borderwidth=3,
+        text=names_buttons[i][j],
+        font=fontExample,
+        bg=color_mode,
+        activebackground='#FF8FF7',
+        # Button activation.
+        command=lambda row=i, col=j: select_mode(row, col)
+    )
+    btn_buttons.grid(row=i, column=j, sticky="nsew")
+
+def make_widget_not_mode_str():
+    for i in range(0,7):
+        for j in range(len(names_buttons[i])):
+            color_mode = "#01C624"
+            btn_buttons(i, j, color_mode)
+
+
+def make_widget():
+    make_widget_not_mode_str()
+    make_widget_str()
+    make_widget_mode_str()
+
 if __name__ == '__main__':
-
+    make_widget()
     window.mainloop()
