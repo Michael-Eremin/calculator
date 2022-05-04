@@ -19,6 +19,13 @@ operation_value = ['']
 # Counting the Operation queue in the expression displayed on the screen
 count_operations = [0]
 
+lbl_screen_list = []
+text_for_screen = []
+
+
+def make_screen_text(text_for_screen):
+    text = ''.join(text_for_screen)
+    return text
 
 
 def check_process_status() -> list[str]:
@@ -93,18 +100,23 @@ def calculate_result(operand_1: str, function_operator: str, operand_2=None) -> 
 
 def write_first_operand(act_btn):
     if act_btn != '.' or act_btn == '.' and '.' not in first_operand_digits:
-        lbl_screen['text'] += act_btn
         first_operand_digits.extend(act_btn)
+        text_for_screen.append(act_btn)
+        return make_screen_text(text_for_screen)
 
 
 def write_next_operand(act_btn):
     if act_btn != '.' or act_btn == '.' and '.' not in next_operand_digits:
-        lbl_screen['text'] += act_btn
         next_operand_digits.extend(act_btn)
+        text_for_screen.append(act_btn)
+        return make_screen_text(text_for_screen)
 
 
 def write_operation(act_btn):
-    lbl_screen['text'] = lbl_screen['text'].replace(operation_value[0], '') + act_btn
+    val_oper = operation_value[0]
+    text_for_screen.pop(val_oper)
+    text_for_screen.append(act_btn)
+    return make_screen_text(text_for_screen)
 
 
 def reset_status():
@@ -141,7 +153,9 @@ def activate_equally_button(act_btn):
 
     if status[0] == '_F_of' or status[0] == '_F_ot_N':
         result[0] = call_calculation()
-        lbl_screen['text'] = str(result[0])
+
+        text_for_screen.append(str(result[0]))
+        return make_screen_text(text_for_screen)
     count_operations[0] = + 1
     operation_value[0] = act_btn
 
@@ -172,7 +186,10 @@ def activate_operation_button(act_btn):
         write_operation(act_btn)
     elif status[0] == '_F_of' or status[0] == '_F_ot_N':
         result[0] = call_calculation()
-        lbl_screen['text'] = str(result[0]) + act_btn
+        text_for_screen.clear()
+        text_for_screen.append(str(result[0]))
+        text_for_screen.append(act_btn)
+        make_screen_text(text_for_screen)
     count_operations[0] = + 1
     operation_value[0] = act_btn
     print('status num:', status[0])
@@ -182,7 +199,10 @@ def activate_operation_button(act_btn):
 def activate_ce_button():
     """Activation of the button with the value of 'CE'."""
     reset_status()
-    lbl_screen['text'] = ''
+    text_for_screen.clear()
+    make_screen_text(text_for_screen)
+
+
 
 
 
