@@ -7,9 +7,9 @@ from calc.calc_parse import calculate_by_line
 
 # Class 'tkinter' instance.
 window = tk.Tk()
-window.title('CALCULATOR')
 
 # Window Options.
+window.title('CALCULATOR')
 window.columnconfigure([0, 1, 2, 3], weight=1, minsize=130)
 window.rowconfigure([0, 1, 2, 3, 4, 5, 6,7], weight=1, minsize=60)
 fontExample = tkFont.Font(family="Arial", size=18, weight="normal", slant="roman")
@@ -124,10 +124,12 @@ def calculate_result(operand_1: str, function_operator: str, operand_2=None) -> 
         result_operation = float(1) / operand_1
     return round(result_operation, 4)
 
+
 def write_first_operand(act_btn):
     if act_btn != '.' or act_btn == '.' and '.' not in first_operand_digits:
         lbl_screen['text'] += act_btn
         first_operand_digits.extend(act_btn)
+
 
 def write_next_operand(act_btn):
     if act_btn != '.' or act_btn == '.' and '.' not in next_operand_digits:
@@ -144,7 +146,6 @@ def reset_status():
     operation_value[0] = ''
     first_operand_digits.clear()
     next_operand_digits.clear()
-
 
 
 def call_calculation():
@@ -211,10 +212,12 @@ def activate_operation_button(act_btn):
     print('status num:', status[0])
     print('res:', result)
 
+
 def activate_ce_button():
     """Activation of the button with the value of 'CE'."""
     reset_status()
     lbl_screen['text'] = ''
+
 
 def interpret_operation(act_btn):
     if act_btn == '^':
@@ -285,6 +288,7 @@ def value_lbl_screen(act_btn):
     elif act_btn == 'CE':
         activate_ce_button()
 
+
 def make_widget_str():
     for i in range(7, 8):
         for j in range(0,1):
@@ -341,6 +345,7 @@ def btn_buttons(i, j, color_mode):
     )
     btn_buttons.grid(row=i, column=j, sticky="nsew")
 
+
 def make_widget_not_mode_str():
     for i in range(0,7):
         for j in range(len(names_buttons[i])):
@@ -352,6 +357,7 @@ def make_widget():
     make_widget_not_mode_str()
     make_widget_str()
     make_widget_mode_str()
+
 
 if __name__ == '__main__':
     make_widget()

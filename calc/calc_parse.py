@@ -8,5 +8,12 @@ def calculate_by_line(expression_string: str) -> float:
     return result
 
 
+
+
+
+
+
+
+
 if __name__ == '__main__':
     calculate_by_line('(1+2)/2')
