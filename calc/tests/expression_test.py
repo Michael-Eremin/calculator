@@ -1,6 +1,6 @@
-"""Testing the 'calculate_by_line' function from the calc_parse.py module."""
+"""Testing the 'calculate_by_line' function from the expression.py module."""
 from unittest import TestCase, main
-from calc.calc_parse import calculate_by_line
+from calc.expression import calculate_by_line
 
 class CalculatorTest(TestCase):
     def test_one_operation(self):

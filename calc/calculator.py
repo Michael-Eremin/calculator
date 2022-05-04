@@ -3,7 +3,7 @@ import tkinter as tk
 from math import *
 import tkinter.font as tkFont
 from decimal import *
-from calc.calc_parse import calculate_by_line
+from calc.expression import calculate_by_line
 
 # Class 'tkinter' instance.
 window = tk.Tk()
