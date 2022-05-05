@@ -4,12 +4,10 @@ from unittest import TestCase, main
 from calc import expression
 
 
-
-
-
 def load_tests(loader, tests, ignore, calc=None):
     tests.addTests(doctest.DocTestSuite(expression))
     return tests
+
 
 class CalculatorTest(TestCase):
     def test_one_operation(self):
@@ -30,12 +28,10 @@ class CalculatorTest(TestCase):
         self. assertEqual(expression.calculate_by_line('(2+2)*5'), '20')
 
     def test_incorrect_entry(self):
-        with self.assertRaises(SyntaxError) as e:
-            expression.calculate_by_line('55++')
-            expression.calculate_by_line('')
-
-
-
+        self.assertEqual(expression.calculate_by_line('55++'), 'invalid string')
+        self.assertEqual(expression.calculate_by_line('2/0'), 'division by zero')
+        self.assertEqual(expression.calculate_by_line('1/()'), 'operand not specified')
+        self.assertEqual(expression.calculate_by_line('()'), 'operand not specified')
 
 
 if __name__ == '__main__':

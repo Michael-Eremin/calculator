@@ -1,4 +1,5 @@
-"""Function module for calculating the value by parsing the entire expression string."""
+"""Function module for calculating the value by parsing the entire
+expression string. """
 
 import numexpr as ne
 import numpy as np
@@ -13,7 +14,8 @@ text_for_screen = []
 
 # Operation arrays.
 operations_to_manage = ['STR', '<<<', 'CE', '=']
-operations_requiring_interpretation = [' 2√x', ' 3√x', ' L circle_r', ' S circle_r', ' V ball_r', ' 1/x', '^']
+operations_requiring_interpretation = [' 2√x', ' 3√x', ' L circle_r',
+                                       ' S circle_r', ' V ball_r', ' 1/x', '^']
 
 
 def calculate_by_line(expression_string: str) -> str:
@@ -27,8 +29,6 @@ def calculate_by_line(expression_string: str) -> str:
         return 'division by zero'
     except TypeError:
         return 'operand not specified'
-
-
 
 
 def make_screen_text(text_list: list) -> str:
@@ -105,7 +105,8 @@ def value_lbl_screen_str(act_btn: str) -> str:
     >>> value_lbl_screen_str('=')
     '2.0'
     """
-    if act_btn not in operations_to_manage and act_btn not in operations_requiring_interpretation:
+    if act_btn not in operations_to_manage \
+            and act_btn not in operations_requiring_interpretation:
         lbl_screen_list.append(act_btn)
         text_for_screen.append(act_btn)
         return make_screen_text(text_for_screen)
