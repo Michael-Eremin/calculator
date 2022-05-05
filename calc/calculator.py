@@ -3,8 +3,8 @@ import tkinter as tk
 from math import *
 import tkinter.font as tkFont
 from decimal import *
-from calc.expression import value_lbl_screen_str
-from one_action import value_lbl_screen
+from calc.expression import value_lbl_screen_str, clear_text
+from one_action import value_lbl_screen, activate_ce_button
 
 # Class 'tkinter' instance.
 window = tk.Tk()
@@ -13,7 +13,9 @@ window = tk.Tk()
 window.title('CALCULATOR')
 window.columnconfigure([0, 1, 2, 3], weight=1, minsize=130)
 window.rowconfigure([0, 1, 2, 3, 4, 5, 6,7], weight=1, minsize=60)
+
 fontExample = tkFont.Font(family="Arial", size=18, weight="normal", slant="roman")
+
 lbl_screen = tk.Label(master=window, font=fontExample, text='')
 lbl_screen.grid(row=0, columnspan=4, sticky='nsew')
 
@@ -37,20 +39,19 @@ mode = [0]
 
 def select_mode(row, col):
     act_btn = names_buttons[row][col]
-    print('mode', mode[0])
     if act_btn == 'STR':
         if mode[0] == 1:
             lbl_screen['text'] = ''
-            lbl_screen_list.clear()
+            clear_text()
             mode[0] = 0
         else:
+            lbl_screen['text'] = ''
             activate_ce_button()
             mode[0] = 1
         make_widget_str()
         make_widget_mode_str()
     if mode[0] == 1:
         text = value_lbl_screen_str(act_btn)
-        print(text)
         lbl_screen['text'] = text
     else:
         text = value_lbl_screen(act_btn)

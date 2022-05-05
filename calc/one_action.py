@@ -1,4 +1,4 @@
-from math import *
+from math import pi
 
 
 numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.']
@@ -97,11 +97,11 @@ def calculate_result(operand_1: str, function_operator: str, operand_2=None) -> 
     return round(result_operation, 4)
 
 
-
 def write_first_operand(act_btn):
     if act_btn != '.' or act_btn == '.' and '.' not in first_operand_digits:
         first_operand_digits.extend(act_btn)
         text_for_screen.append(act_btn)
+        print('first_operand_digits', first_operand_digits)
         return make_screen_text(text_for_screen)
 
 
@@ -109,12 +109,13 @@ def write_next_operand(act_btn):
     if act_btn != '.' or act_btn == '.' and '.' not in next_operand_digits:
         next_operand_digits.extend(act_btn)
         text_for_screen.append(act_btn)
+        print('next_operand_digits', next_operand_digits)
         return make_screen_text(text_for_screen)
 
 
 def write_operation(act_btn):
-    val_oper = operation_value[0]
-    text_for_screen.pop(val_oper)
+    if text_for_screen[-1] not in numbers:
+        text_for_screen.pop()
     text_for_screen.append(act_btn)
     return make_screen_text(text_for_screen)
 
@@ -150,27 +151,26 @@ def activate_equally_button(act_btn):
     status = check_process_status()
     result = list()
     result.append(0)
-
     if status[0] == '_F_of' or status[0] == '_F_ot_N':
         result[0] = call_calculation()
-
+        text_for_screen.clear()
         text_for_screen.append(str(result[0]))
-        return make_screen_text(text_for_screen)
+        make_screen_text(text_for_screen)
     count_operations[0] = + 1
     operation_value[0] = act_btn
-
+    return str(result[0])
 
 def activate_number_button(act_btn):
     """Activation of the button with the value of the digit."""
     status = check_process_status()
     if status[0] != 'result':
         if status[0] == '_' and not operation_value[0]:
-            write_first_operand(act_btn)
+            return write_first_operand(act_btn)
         elif status[0] == '_' and operation_value[0]:
             reset_status()
-            write_first_operand(act_btn)
+            return write_first_operand(act_btn)
         elif status[0] == '_F_ot' or status[0] == '_F_ot_N':
-            write_next_operand(act_btn)
+            return write_next_operand(act_btn)
 
 
 def activate_operation_button(act_btn):
@@ -180,27 +180,25 @@ def activate_operation_button(act_btn):
     print('1status:', status)
     result = list()
     result.append(0)
-    if status[0] == '_':
-        write_operation(act_btn)
-    elif status[0] == '_F_ot' or status[0] == 'result':
-        write_operation(act_btn)
-    elif status[0] == '_F_of' or status[0] == '_F_ot_N':
-        result[0] = call_calculation()
-        text_for_screen.clear()
-        text_for_screen.append(str(result[0]))
-        text_for_screen.append(act_btn)
-        make_screen_text(text_for_screen)
-    count_operations[0] = + 1
-    operation_value[0] = act_btn
-    print('status num:', status[0])
-    print('res:', result)
-
+    if first_operand_digits:
+        if status[0] == '_F_of' or status[0] == '_F_ot_N':
+            result[0] = call_calculation()
+            text_for_screen.clear()
+            text_for_screen.append(str(result[0]))
+            text_for_screen.append(act_btn)
+        else:
+            write_operation(act_btn)
+        count_operations[0] = + 1
+        operation_value[0] = act_btn
+        print('status num:', status[0])
+        print('res:', result)
+        return make_screen_text(text_for_screen)
 
 def activate_ce_button():
     """Activation of the button with the value of 'CE'."""
     reset_status()
     text_for_screen.clear()
-    make_screen_text(text_for_screen)
+    return make_screen_text(text_for_screen)
 
 
 

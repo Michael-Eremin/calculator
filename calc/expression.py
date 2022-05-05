@@ -1,28 +1,50 @@
-"""The calculator calculates the value by parsing the entire string."""
+"""Function module for calculating the value by parsing the entire expression string."""
 
 import numexpr as ne
 import numpy as np
 from math import pi
 
 
-# List to calculate in 'STR' mode.
+# List to create a line for calculation.
 lbl_screen_list = []
+
+# List to create a string to display.
 text_for_screen = []
+
+# Operation arrays.
 operations_to_manage = ['STR', '<<<', 'CE', '=']
 operations_requiring_interpretation = [' 2√x', ' 3√x', ' L circle_r', ' S circle_r', ' V ball_r', ' 1/x', '^']
 
-def calculate_by_line(expression_string: str) -> float:
+
+def calculate_by_line(expression_string: str) -> str:
     """Parses the given string and makes calculations."""
-    result = ne.evaluate(expression_string)
-    return str(np.round(result, 4))
+    try:
+        result = ne.evaluate(expression_string)
+        return str(np.round(result, 4))
+    except SyntaxError:
+        return 'invalid string'
+    except ZeroDivisionError:
+        return 'division by zero'
+    except TypeError:
+        return 'operand not specified'
 
 
-def make_screen_text(text_for_screen):
-    text = ''.join(text_for_screen)
+
+
+def make_screen_text(text_list: list) -> str:
+    """Converts a list to a string for display."""
+    text = ''.join(text_list)
     return text
 
 
-def interpret_operation(act_btn):
+def clear_text():
+    """Removes content from the calculated list and screen list."""
+    lbl_screen_list.clear()
+    text_for_screen.clear()
+
+
+def interpret_operation(act_btn: str) -> str:
+    """Interprets the name of the operation buttons for the calculation."""
     if act_btn == '^':
         text_for_screen.append(act_btn)
         act_btn = '**'
@@ -69,7 +91,20 @@ def interpret_operation(act_btn):
         return make_screen_text(text_for_screen)
 
 
-def value_lbl_screen_str(act_btn):
+def value_lbl_screen_str(act_btn: str) -> str:
+    """
+    Gets activated button values and puts them to work
+    >>> value_lbl_screen_str('3')
+    '3'
+    >>> value_lbl_screen_str('+')
+    '3+'
+    >>> value_lbl_screen_str('5')
+    '3+5'
+    >>> value_lbl_screen_str(' 3√x')
+    '(3+5)3√x'
+    >>> value_lbl_screen_str('=')
+    '2.0'
+    """
     if act_btn not in operations_to_manage and act_btn not in operations_requiring_interpretation:
         lbl_screen_list.append(act_btn)
         text_for_screen.append(act_btn)
@@ -80,22 +115,15 @@ def value_lbl_screen_str(act_btn):
         text_for_screen.append(calculate_by_line(lbl_screen_str))
         return make_screen_text(text_for_screen)
     elif act_btn == 'CE':
-        lbl_screen_list.clear()
-        text_for_screen.clear()
+        clear_text()
         return make_screen_text(text_for_screen)
     elif act_btn == '<<<':
-        lbl_screen_list.pop()
-        text_for_screen.pop()
-        return make_screen_text(text_for_screen)
+        try:
+            lbl_screen_list.pop()
+            text_for_screen.pop()
+            return make_screen_text(text_for_screen)
+        except IndexError:
+            return 'incorrect operation'
     elif act_btn in operations_requiring_interpretation:
         return interpret_operation(act_btn)
 
-
-
-
-
-
-
-
-if __name__ == '__main__':
-    calculate_by_line('(1+2)/2')
