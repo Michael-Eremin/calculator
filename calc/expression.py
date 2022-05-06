@@ -1,8 +1,10 @@
 """Function module for calculating the value by parsing the entire
 expression string. """
 
-import numexpr as ne
-import numpy as np
+# import numexpr as ne
+# import numpy as np
+from numexpr import evaluate
+from numpy import round
 from math import pi
 
 
@@ -21,8 +23,8 @@ operations_requiring_interpretation = [' 2√x', ' 3√x', ' L circle_r',
 def calculate_by_line(expression_string: str) -> str:
     """Parses the given string and makes calculations."""
     try:
-        result = ne.evaluate(expression_string)
-        return str(np.round(result, 4))
+        result = evaluate(expression_string)
+        return str(round(result, 4))
     except SyntaxError:
         return 'invalid string'
     except ZeroDivisionError:
