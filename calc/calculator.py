@@ -7,7 +7,7 @@ import tkinter as tk
 from math import *
 import tkinter.font as tkFont
 from decimal import *
-from calc.expression import value_lbl_screen_str, clear_text
+from expression import value_lbl_screen_str, clear_text
 from one_action import value_lbl_screen, activate_ce_button
 
 # Class 'tkinter' instance.
