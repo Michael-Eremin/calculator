@@ -1,8 +1,7 @@
 """Function module for calculating the value by parsing the entire
 expression string. """
 
-# import numexpr as ne
-# import numpy as np
+
 from numexpr import evaluate
 from numpy import round
 from math import pi
