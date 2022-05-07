@@ -6,6 +6,8 @@ Single operation mode.
 Row mode with multiple operations in an expression.
 The modes are switched by the "STR" button.
 
+![calc_img.png](.)
+
 Functions for one argument have been added to the usual arithmetic operations.
 * The inverse function - "1/x"
 * The length of the circle by radius - "L circle_r"
@@ -25,8 +27,7 @@ Functions for one argument have been added to the usual arithmetic operations.
 #####Tests - 2 modules:
 * **expression_test.py** - tests for module expression.py
 * **one_action_test.py** - tests for module one_action.py
-#####Run file:
-* **main.exe**
+
 
 ##DevelopmentrRequirements
 ####Python 3.10.0
@@ -58,4 +59,3 @@ Functions for one argument have been added to the usual arithmetic operations.
 Download three main function files(main.py, expression.py, one_action.py ).
 And run the main.py through the IDE.
 Terminal - command: **python main.py**.
-Or download one file: **main.exe** to your desktop and run it.
