@@ -6,7 +6,7 @@ Single operation mode.
 Row mode with multiple operations in an expression.
 The modes are switched by the "STR" button.
 
-![calc_img.png](.)
+<img alt="calc_img.png" height="180" src="./calc_img.png" width="270"/>
 
 Functions for one argument have been added to the usual arithmetic operations.
 * The inverse function - "1/x"
