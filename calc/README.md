@@ -1,5 +1,7 @@
 # CALCULATOR
+
 ##Description
+
 Module for simple mathematical calculations.
 Two operating modes.
 Single operation mode. 
@@ -20,7 +22,9 @@ Functions for one argument have been added to the usual arithmetic operations.
 * Reset values - "CE"
 
 ##Project composition
+
 #####Functionality - 3 modules:
+
 * **main.py** - main "tkinter" widget assembly module
 * **expression.py** - calculation functional module by expression string
 * **one_action.py** - calculation functional module for one function
@@ -30,7 +34,9 @@ Functions for one argument have been added to the usual arithmetic operations.
 
 
 ##DevelopmentrRequirements
+
 ####Python 3.10.0
+
 * unitest
 * doctest
 * tkinter
@@ -39,6 +45,7 @@ Functions for one argument have been added to the usual arithmetic operations.
 * math
 
 ####Packages(pip_requirements.txt):
+
 * astroid==2.9.3
 * isort==5.10.1 
 * lazy-object-proxy==1.7.1
@@ -56,6 +63,7 @@ Functions for one argument have been added to the usual arithmetic operations.
 * wrapt==1.13.3
 
 ##Code start
+
 Download three main function files(main.py, expression.py, one_action.py ).
 And run the main.py through the IDE.
 Terminal - command: **python main.py**.
