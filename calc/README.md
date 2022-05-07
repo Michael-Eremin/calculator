@@ -35,7 +35,11 @@ Functions for one argument have been added to the usual arithmetic operations.
 * **one_action_test.py** - tests for module one_action.py
 
 
+<<<<<<< HEAD
 ##Development Requirements
+=======
+##DevelopmentrRequirements
+>>>>>>> 873391b99ed4b054c233ef28822225a961b8c1dd
 
 ####Python 3.10.0
 
