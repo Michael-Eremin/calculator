@@ -21,6 +21,7 @@ Functions for one argument have been added to the usual arithmetic operations.
 * Canceling the last input (only in the mode "STR") - "<<<"
 * Reset values - "CE"
 
+
 ##Project composition
 
 #####Functionality - 3 modules:
@@ -35,11 +36,7 @@ Functions for one argument have been added to the usual arithmetic operations.
 * **one_action_test.py** - tests for module one_action.py
 
 
-<<<<<<< HEAD
 ##Development Requirements
-=======
-##DevelopmentrRequirements
->>>>>>> 873391b99ed4b054c233ef28822225a961b8c1dd
 
 ####Python 3.10.0
 
@@ -67,6 +64,7 @@ Functions for one argument have been added to the usual arithmetic operations.
 * typing-extensions==4.0.1
 * ufw==0.36
 * wrapt==1.13.3
+
 
 ##Code start
 
